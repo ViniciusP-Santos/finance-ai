@@ -1,80 +1,46 @@
-import { PiggyBankIcon, TrendingDownIcon, TrendingUpIcon } from "lucide-react";
+import {
+  PiggyBankIcon,
+  TrendingDownIcon,
+  TrendingUpIcon,
+  WalletIcon,
+} from "lucide-react";
 import SummaryCard from "./summary-card";
-import { db } from "@/app/_lib/prisma";
-import { TransactionType } from "@prisma/client";
 
-interface SummaryCardsProps {
+interface SummaryCards {
   month: string;
+  balance: number;
+  depositsTotal: number;
+  investmentsTotal: number;
+  expensesTotal: number;
 }
 
-const SummaryCards = async ({ month }: SummaryCardsProps) => {
-  const where = {
-    date: {
-      gte: new Date(`2024-${month}-01`),
-      lte: new Date(`2024-${month}-01`),
-    },
-  };
-
-  const depositsTotal = Number(
-    (
-      await db.transaction.aggregate({
-        where: {
-          ...where,
-          type: TransactionType.DEPOSIT,
-        },
-        _sum: {
-          amount: true,
-        },
-      })
-    )?._sum?.amount,
-  );
-  const investimentsTotal = Number(
-    (
-      await db.transaction.aggregate({
-        where: {
-          ...where,
-          type: TransactionType.INVESTMENT,
-        },
-        _sum: {
-          amount: true,
-        },
-      })
-    )?._sum?.amount,
-  );
-  const expensesTotal = Number(
-    (
-      await db.transaction.aggregate({
-        where: {
-          ...where,
-          type: TransactionType.EXPENSE,
-        },
-        _sum: {
-          amount: true,
-        },
-      })
-    )?._sum?.amount,
-  );
-
-  const balance = depositsTotal - investimentsTotal - expensesTotal;
-
+const SummaryCards = async ({
+  balance,
+  depositsTotal,
+  expensesTotal,
+  investmentsTotal,
+}: SummaryCards) => {
   return (
     <div className="space-y-6">
+      {/* PRIMEIRO CARD */}
+
       <SummaryCard
-        icon={<PiggyBankIcon size={16} />}
+        icon={<WalletIcon size={16} />}
         title="Saldo"
         amount={balance}
         size="large"
       />
 
+      {/* OUTROS CARDS */}
       <div className="grid grid-cols-3 gap-6">
         <SummaryCard
           icon={<PiggyBankIcon size={16} />}
-          title="Investimentos"
-          amount={investimentsTotal}
+          title="Investido"
+          amount={investmentsTotal}
         />
         <SummaryCard
           icon={<TrendingUpIcon size={16} className="text-primary" />}
-          title="Receitas"
+          title="Receita"
           amount={depositsTotal}
         />
         <SummaryCard

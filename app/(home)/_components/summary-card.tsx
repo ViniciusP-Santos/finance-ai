@@ -8,6 +8,7 @@ interface SummaryCardProps {
   amount: number;
   size?: "small" | "large";
 }
+
 const SummaryCard = ({
   icon,
   title,
@@ -16,7 +17,7 @@ const SummaryCard = ({
 }: SummaryCardProps) => {
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex-row items-center gap-4">
         {icon}
         <p
           className={`${size === "small" ? "text-muted-foreground" : "text-white opacity-70"}`}
@@ -33,6 +34,7 @@ const SummaryCard = ({
             currency: "BRL",
           }).format(amount)}
         </p>
+
         {size === "large" && <AddTransactionButton />}
       </CardContent>
     </Card>
